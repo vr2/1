@@ -34,7 +34,7 @@ const alasql = {
 };
 
 // /flag 파일을 실행하고 플래그를 가져오는 함수 호출
-alasql.fn.executeFlagFile()
+alasql.fn.executeFlagFile() // executeFlagFile 함수 호출
     .then(flag => {
         console.log("Flag: ", flag); // 실행 결과를 출력
     })
