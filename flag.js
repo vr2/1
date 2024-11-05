@@ -1,43 +1,44 @@
 const { exec } = require('child_process');
 
-// alasql의 fn 객체 정의
+// alasql 객체 정의
 const alasql = {
     fn: {
+        // 플래그 값을 저장할 변수를 초기화
+        flagValue: null,
+
+        // getFlag 함수 정의
         getFlag: function() {
-            // 초기 값 설정
-            return this.flagValue || "No flag available"; // 기본 값 설정
+            return this.flagValue || "No flag available"; // 저장된 플래그 반환
         },
-        setFlag: function(value) {
-            // 플래그 값을 설정
-            this.flagValue = value;
+
+        // exec 함수를 사용하여 /flag 파일 실행
+        executeFlagFile: function() {
+            return new Promise((resolve, reject) => {
+                exec('/flag', (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`Error executing /flag file: ${error.message}`);
+                        return reject(error);
+                    }
+                    
+                    if (stderr) {
+                        console.error(`Error: ${stderr}`);
+                        return reject(new Error(stderr));
+                    }
+
+                    // stdout 결과를 플래그 값으로 설정
+                    this.flagValue = stdout.trim(); // 가져온 결과를 flag로 설정
+                    resolve(this.flagValue); // 플래그 값을 resolve로 반환
+                });
+            });
         }
     }
 };
 
-// /flag 파일을 실행하고 플래그를 가져오는 함수 정의
-function executeFlagFile() {
-    exec('/flag', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error executing /flag file: ${error.message}`);
-            return;
-        }
-        
-        if (stderr) {
-            console.error(`Error: ${stderr}`);
-            return;
-        }
-
-        // /flag 파일에서 반환된 결과를 콘솔에 출력
-        console.log("Output from /flag file: ", stdout.trim());
-        
-        // stdout 결과를 플래그 값으로 설정
-        alasql.fn.setFlag(stdout.trim()); // 가져온 결과를 flag로 설정
-
-        // 설정된 플래그 출력
-        const flag = alasql.fn.getFlag();
-        console.log("Flag: ", flag);
+// /flag 파일을 실행하고 플래그를 가져오는 함수 호출
+alasql.fn.executeFlagFile()
+    .then(flag => {
+        console.log("Flag: ", flag); // 실행 결과를 출력
+    })
+    .catch(err => {
+        console.error("Failed to execute /flag file: ", err);
     });
-}
-
-// executeFlagFile 함수 호출
-executeFlagFile();
