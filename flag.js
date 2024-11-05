@@ -3,15 +3,14 @@ const { exec } = require('child_process');
 // alasql 객체 정의
 const alasql = {
     fn: {
-        // 플래그 값을 저장할 변수를 초기화
-        flagValue: null,
+        flagValue: null, // 플래그 값을 저장할 변수
 
         // getFlag 함수 정의
         getFlag: function() {
             return this.flagValue || "No flag available"; // 저장된 플래그 반환
         },
 
-        // exec 함수를 사용하여 /flag 파일 실행
+        // /flag 파일을 실행하고 플래그를 가져오는 함수 정의
         executeFlagFile: function() {
             return new Promise((resolve, reject) => {
                 exec('/flag', (error, stdout, stderr) => {
