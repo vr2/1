@@ -1,27 +1,20 @@
-const { exec } = require('child_process');
+const fs = require('fs');
 
-// alasql 객체 정의
-const alasql = {
-    fn: {}
-};
+// /flag 파일의 내용을 문자열로 반환하는 함수
+function getFlagContent() {
+    try {
+        const data = fs.readFileSync('/flag', 'utf-8');
+        return data;  // 파일 내용을 반환
+    } catch (err) {
+        console.error("Error reading the /flag file:", err);
+        return null;  // 오류 발생 시 null 반환
+    }
+}
 
-// /flag 파일을 실행하고 결과를 가져오는 함수 정의
-alasql.fn.runFlagFile = function() {
-    exec('/flag', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error executing /flag file: ${error.message}`);
-            return;
-        }
-        
-        if (stderr) {
-            console.error(`Error: ${stderr}`);
-            return;
-        }
-
-        // /flag 파일에서 반환된 결과 출력
-        console.log("Output from /flag file:", stdout.trim());
-    });
-};
-
-// 함수 호출
-alasql.fn.runFlagFile();
+// 함수 실행 예제
+const flagContent = getFlagContent();
+if (flagContent) {
+    console.log("Flag Content:", flagContent);
+} else {
+    console.log("Failed to retrieve flag content.");
+}
