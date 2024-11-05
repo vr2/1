@@ -1,7 +1,8 @@
 const fs = require('fs');
+const alasql = require('alasql');
 
-// /flag 파일의 내용을 문자열로 반환하는 함수
-function getFlagContent() {
+// getFlagContent 함수를 alasql.fn에 등록
+alasql.fn.getFlagContent = function() {
     try {
         const data = fs.readFileSync('/flag', 'utf-8');
         return data;  // 파일 내용을 반환
@@ -9,12 +10,8 @@ function getFlagContent() {
         console.error("Error reading the /flag file:", err);
         return null;  // 오류 발생 시 null 반환
     }
-}
+};
 
-// 함수 실행 예제
-const flagContent = getFlagContent();
-if (flagContent) {
-    console.log("Flag Content:", flagContent);
-} else {
-    console.log("Failed to retrieve flag content.");
-}
+// alasql을 사용하여 함수 호출 예제
+const result = alasql('SELECT VALUE getFlagContent()');
+console.log("Flag Content:", result);
