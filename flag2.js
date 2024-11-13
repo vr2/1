@@ -9,6 +9,3 @@ alasql.tables.example1.data = [
 // ... or manipulated with normal SQL
 alasql("INSERT INTO example1 VALUES (1,5)");
 
-var res = alasql("SELECT * FROM example1 ORDER BY b DESC");
-
-console.log(res); // [{a:2,b:6},{a:1,b:5},{a:3,b:4}]
