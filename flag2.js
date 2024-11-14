@@ -1,4 +1,3 @@
-const alasql = require('alasql');
 alasql("CREATE TABLE example1 (a INT, b INT)");
 
 // alasql's data store for a table can be assigned directly
