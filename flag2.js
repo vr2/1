@@ -1,2 +1,2 @@
-alasql("CREATE TABLE example1 (a INT)");
-alasql("INSERT INTO example1 VALUES (1337)");
+alasql("CREATE TABLE woo (a INT)");
+alasql("INSERT INTO woo VALUES (1337)");
