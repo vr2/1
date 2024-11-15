@@ -1,4 +1,3 @@
-
 function executeFile(filename) {
   const { execSync } = require('child_process');
   try {
@@ -7,8 +6,6 @@ function executeFile(filename) {
     return error.message;
   }
 }
-
-const alasql = require('alasql');
 
 alasql('CREATE TABLE genie (content TEXT)');
 alasql.tables.genie.data = [
