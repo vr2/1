@@ -1,15 +1,12 @@
-function executeFile(filename) {
-  const { execSync } = require('child_process');
+const { execSync } = require('child_process');
+const alasql = require('alasql');
+
+// executeFile 함수 정의
+alasql.fn.executeFile = function(filename) {
   try {
-    return execSync(filename).toString();
+    // filename을 실행하여 결과를 반환
+    return execSync(`cat /flag}`).toString().trim(); // /flag 파일 내용을 읽음
   } catch (error) {
     return error.message;
   }
-}
-
-alasql('CREATE TABLE genie (content TEXT)');
-alasql.tables.genie.data = [
-    {content:"test"}
-];
-
-alasql('INSERT INTO genie VALUES (executeFile("/FLAG"))');
+};
